@@ -1,0 +1,22 @@
+name: Run Databricks Pipeline
+
+on:
+  push:
+    branches:
+      - main  # or your branch
+
+jobs:
+  trigger-databricks-job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger Databricks Job via API
+        run: |
+          curl -X POST "$DATABRICKS_HOST/api/2.1/jobs/run-now" \
+          -H "Authorization: Bearer $DATABRICKS_TOKEN" \
+          -H "Content-Type: application/json" \
+          -d "{\"job_id\": $DATABRICKS_JOB_ID}"
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          DATABRICKS_JOB_ID: ${{ secrets.DATABRICKS_JOB_ID }}
